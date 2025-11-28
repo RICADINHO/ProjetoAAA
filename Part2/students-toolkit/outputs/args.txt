@@ -1,0 +1,1 @@
+/home/ricadinho/Desktop/cenas_universidade/2_ano/1_semestre/AAA/ree/.venv/lib/python3.13/site-packages/ipykernel_launcher.py --f=/run/user/1000/jupyter/runtime/kernel-v31d1c8fdfa6042d0e12dbfcca0085f31529e2fa51.json

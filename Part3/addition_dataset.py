@@ -104,7 +104,20 @@ def make_addition_samples_and_labels(expressionLists, char2ind_map):
     y_int: Python list of list of int. len(x_int)=len(y_int).
         The int-coded labels/targets for each addition expression (i.e. the next chars).
     '''
-    pass
+
+    prox_expressionLists = []
+    
+    for i in range(len(expressionLists)):
+        expressionLists[i] = list(map(char2ind_map.get, expressionLists[i]))
+        expressionLists[i].pop(-1)
+        prox_expressionLists.append(expressionLists[i][1:])
+        #prox_expressionLists[i].append(13)
+        if prox_expressionLists[i][-1] != 12 and prox_expressionLists[i][-1] != 13:
+            prox_expressionLists[i].append(12)
+        else:
+            prox_expressionLists[i].append(13)
+    
+    return expressionLists, prox_expressionLists
 
 
 
@@ -121,7 +134,9 @@ def make_ind2char_mapping(char2ind_map):
     Dictionary mapping int → str.
         Maps ints back into the original chars in the vocabulary.
     '''
-    pass
+    ind2char_map = {v: k for k, v in char2ind_map.items()}
+    
+    return ind2char_map
 
 
 
@@ -142,7 +157,12 @@ def convert_int2str(x_int, ind2char_map):
         A list of addition expressions, where each expression is represented as a list of characters (str).
         Example: ['4', '7', '+', '5', '1', '=', '9', '8', '.']
     '''
-    pass
+    
+    for i in range(len(x_int)):
+        x_int[i] = list(map(ind2char_map.get, x_int[i]))
+    
+    return x_int
+
 
 
 
@@ -169,7 +189,16 @@ def make_train_val_split(x, y, val_prop=0.1):
     y_val: torch.tensor
         Validation set labels.
     '''
-    pass
+    
+    val_propx = int(len(x)*val_prop)
+    val_propy = int(len(y)*val_prop)
+    
+    x_train = x[val_propx:]
+    y_train = y[val_propy:]
+    x_val = x[0:val_propx]
+    y_val = y[0:val_propy]
+    
+    return torch.as_tensor(x_train), torch.as_tensor(y_train), torch.as_tensor(x_val), torch.as_tensor(y_val)
 
 
 
@@ -192,7 +221,16 @@ def split_sum_and_answer(x_str):
         All characters to the right of the = in each expression, represented as single strings.
         Example: '98.#'
     '''
-    pass
+    
+    for i in range(len(x_str)):
+        x_str[i] = ''.join(x_str[i])
+        x_str[i] = x_str[i].split('=')
+        x_str[i][0] = x_str[i][0]+"="
+    
+    x_str_x = list(np.array(x_str)[:,0])
+    x_str_y = list(np.array(x_str)[:,1])
+    
+    return x_str_x, x_str_y
 
 
 
@@ -228,7 +266,7 @@ def get_addition_dataset(N, max_operand_digits=2, seed=1, val_prop=0.1):
     char2ind_map = get_char2ind_map()
     ind2char_map = make_ind2char_mapping(char2ind_map.copy())
     
-    addition_expressions = make_addition_expressions(N,max_operand_digits,seed)
+    addition_expressions = make_addition_expressions(N,max_operand_digits, seed)
     
     x_int_test, y_int_test = make_addition_samples_and_labels(addition_expressions.copy(), char2ind_map.copy())
     
@@ -240,3 +278,42 @@ def get_addition_dataset(N, max_operand_digits=2, seed=1, val_prop=0.1):
     lhs_lists, ans_lists = split_sum_and_answer(x_str_test.copy())
 
     return x_train_test, y_train_test, x_val_test, y_val_test
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

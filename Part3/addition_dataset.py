@@ -75,11 +75,6 @@ def make_addition_expressions(N, max_operand_digits=2, seed=123):
         # Pad to ensure all expressions have same length
         expression = f'{expression:#<{addition_eq_len}}'
         expressions.append(list(expression))
-
-    print(f'First 5/{N} expressions:')
-    for i in range(5):
-        print(' ', expressions[i])
-
     return expressions
 
 
@@ -110,8 +105,10 @@ def make_addition_samples_and_labels(expressionLists, char2ind_map):
     for i in range(len(expressionLists)):
         expressionLists[i] = list(map(char2ind_map.get, expressionLists[i]))
         expressionLists[i].pop(-1)
+        
+        # remove last item on the list for the shape to be [n,9]
         prox_expressionLists.append(expressionLists[i][1:])
-        #prox_expressionLists[i].append(13)
+        
         if prox_expressionLists[i][-1] != 12 and prox_expressionLists[i][-1] != 13:
             prox_expressionLists[i].append(12)
         else:
@@ -264,56 +261,11 @@ def get_addition_dataset(N, max_operand_digits=2, seed=1, val_prop=0.1):
     '''
     
     char2ind_map = get_char2ind_map()
-    ind2char_map = make_ind2char_mapping(char2ind_map.copy())
     
     addition_expressions = make_addition_expressions(N,max_operand_digits, seed)
     
     x_int_test, y_int_test = make_addition_samples_and_labels(addition_expressions.copy(), char2ind_map.copy())
     
-    x_str_test = convert_int2str(x_int_test.copy(), ind2char_map.copy())
-    y_str_test = convert_int2str(y_int_test.copy(), ind2char_map.copy())
-    
     x_train_test, y_train_test, x_val_test, y_val_test = make_train_val_split(x_int_test.copy(), y_int_test.copy(), val_prop)
-    
-    lhs_lists, ans_lists = split_sum_and_answer(x_str_test.copy())
 
     return x_train_test, y_train_test, x_val_test, y_val_test
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

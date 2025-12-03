@@ -1,0 +1,23 @@
+1.
+
+The NewGELU class computes an approximation of the real GELU rather than the exact definition to save computation time and resources since the real GELU requires computing the cumulative distribution function of a Gaussian that is computed with error function which is more expensive compared to the tanh function that only requires basic mathematical operations.
+
+2.
+
+The code line transforms the query tensor from a single large embedding vector into smaller separate sections for each attention head to process the input in parallel, grouping the data into segments by head rather than word.
+
+3.
+
+A: The attention score division acts as a normalization factor for the Q and K dot product, if their dimension is large the dot product can grow very large.
+
+B: If the scaling were to be removed the dot products could become extremely large which causes several problems.
+
+C: This line applies a mask to the attention scores so that the model can't look into the future unseen tokens and know their values.
+
+D: If the mask were omitted, the model would be able to see into the future and the model would learn from the attention mechanism since it would already know the next tokens in line and would only learn to use the tokens ahead of the current one and would fail on the testing phase since it was train with unobtainable data.
+
+4.
+
+A: no, the original implementation uses Post normalization and the minGPT uses Pre normalization.
+
+B: The key difference is where the layer of normalization is placed relative to the residual connection, the attention layer and MLP layer. On the Post normalization the normalization is applied after the residual addition x= Norm(x + SubLayer(x)), and in the Pre normalization the normalization is applied before the subLayer input, inside the residual branch x= x + SubLayer(Norm(x)). Post norm can cause vanishing gradient or exploding gradients in deep networks and might need tweaks on the learning rate, the Pre norm improves stability since there is a clear path for the gradient to follow, this improves the deep networks problem.

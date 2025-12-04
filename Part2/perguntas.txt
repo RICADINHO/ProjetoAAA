@@ -21,3 +21,7 @@ D: If the mask were omitted, the model would be able to see into the future and 
 A: no, the original implementation uses Post normalization and the minGPT uses Pre normalization.
 
 B: The key difference is where the layer of normalization is placed relative to the residual connection, the attention layer and MLP layer. On the Post normalization the normalization is applied after the residual addition x= Norm(x + SubLayer(x)), and in the Pre normalization the normalization is applied before the subLayer input, inside the residual branch x= x + SubLayer(Norm(x)). Post norm can cause vanishing gradient or exploding gradients in deep networks and might need tweaks on the learning rate, the Pre norm improves stability since there is a clear path for the gradient to follow, this improves the deep networks problem.
+
+5.
+
+

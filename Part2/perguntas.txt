@@ -24,4 +24,14 @@ B: The key difference is where the layer of normalization is placed relative to 
 
 5.
 
+The MLP serves as the processing part of the transformer for each token while the attention layer deals with communication between tokens. The dimensiinality is expanded to 4*n_embd to project the data into a larger space. This allows the transformer to learn more complex patterns and relationships before being compressed down again for the next block.
+
+6.
+
+Positional embeddings are added element wise to the token embeddings at the input stage. They are necessary because the self attention mechanism needs to know the order, the embeddings add sequence information, allowing the model to understand word order and different meanings between same sets of tokens.
+
+7.
+
+This line isolates the top k most likely tokens to be correct by finding the k highest score in the current distribution of tokens. Then, it deletes all other tokens by setting their score to -infinity, so that when the softmax is applied they won't be chosen.
+
 
